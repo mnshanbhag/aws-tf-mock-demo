@@ -1,0 +1,16 @@
+project_name = "mits-demo"
+environment  = "dev"
+
+primary_region   = "eu-west-2"
+secondary_region = "eu-west-1"
+
+primary_vpc_cidr   = "10.10.0.0/16"
+secondary_vpc_cidr = "10.20.0.0/16"
+
+instance_type    = "t3.micro"
+allowed_ssh_cidr = "0.0.0.0/0" # mock only — restrict this on real AWS
+
+db_username           = "dbadmin"
+db_password           = "MockPassw0rd!2026" # never a real secret — see README
+db_instance_class     = "db.t3.small"
+db_allocated_storage  = 20

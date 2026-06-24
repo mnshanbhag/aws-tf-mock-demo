@@ -1,0 +1,17 @@
+# Terraform state and local data
+terraform.tfstate
+terraform.tfstate.backup
+terraform.tfvars
+*.tfplan
+
+# Terraform plugin cache and lock
+.terraform/
+# Keep the lock file — it pins provider versions
+!.terraform.lock.hcl
+
+# LocalStack persistence volume
+.localstack/
+
+# OS / editor noise
+.DS_Store
+*.swp

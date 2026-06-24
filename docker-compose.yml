@@ -1,0 +1,24 @@
+services:
+  localstack:
+    container_name: localstack-demo
+    image: localstack/localstack:3.8
+    ports:
+      - "4566:4566"       # Edge port — every AWS API goes through here
+      - "4510-4559:4510-4559" # Used internally for some emulated services (e.g. RDS)
+    environment:
+      - SERVICES=ec2,iam,rds,s3,sts
+      - DEBUG=0
+      # MSSQL_ACCEPT_EULA is required before LocalStack will let you create
+      # a sqlserver-ex RDS instance — it's accepting Microsoft's EULA on
+      # your behalf, for local testing only.
+      - MSSQL_ACCEPT_EULA=Y
+      - PERSISTENCE=1
+    volumes:
+      - "./.localstack:/var/lib/localstack"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4566/_localstack/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
