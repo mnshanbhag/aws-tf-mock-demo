@@ -6,6 +6,16 @@ terraform {
       source  = "hashicorp/aws"
       version = "~> 5.0"
     }
+    # archive is a local provider (no API calls) used by the lambda module
+    # to zip handler.py at plan time and track source_code_hash changes.
+    archive = {
+      source  = "hashicorp/archive"
+      version = "~> 2.0"
+    }
+    grafana = {
+      source  = "grafana/grafana"
+      version = "~> 3.7"
+    }
   }
 
   # For the mock setup we keep state local. In a real multi-person project
@@ -40,11 +50,14 @@ provider "aws" {
   skip_requesting_account_id  = true
 
   endpoints {
-    ec2 = "http://localhost:4566"
-    iam = "http://localhost:4566"
-    rds = "http://localhost:4566"
-    s3  = "http://localhost:4566"
-    sts = "http://localhost:4566"
+    cloudwatch = "http://localhost:4566"
+    ec2        = "http://localhost:4566"
+    iam        = "http://localhost:4566"
+    lambda     = "http://localhost:4566"
+    logs       = "http://localhost:4566"
+    rds        = "http://localhost:4566"
+    s3         = "http://localhost:4566"
+    sts        = "http://localhost:4566"
   }
 }
 
@@ -60,10 +73,23 @@ provider "aws" {
   skip_requesting_account_id  = true
 
   endpoints {
-    ec2 = "http://localhost:4566"
-    iam = "http://localhost:4566"
-    rds = "http://localhost:4566"
-    s3  = "http://localhost:4566"
-    sts = "http://localhost:4566"
+    cloudwatch = "http://localhost:4566"
+    ec2        = "http://localhost:4566"
+    iam        = "http://localhost:4566"
+    lambda     = "http://localhost:4566"
+    logs       = "http://localhost:4566"
+    rds        = "http://localhost:4566"
+    s3         = "http://localhost:4566"
+    sts        = "http://localhost:4566"
   }
 }
+
+provider "archive" {}
+
+# Grafana runs as a Docker container alongside LocalStack.
+# `make up` starts both; Terraform talks to Grafana's HTTP API on port 3000.
+provider "grafana" {
+  url  = "http://localhost:3000"
+  auth = "admin:admin"
+}
+

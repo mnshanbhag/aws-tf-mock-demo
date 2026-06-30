@@ -25,3 +25,15 @@ output "rds_endpoint" {
 output "iam_role" {
   value = module.iam.role_name
 }
+
+output "lambda_function_name" {
+  value = module.lambda.function_name
+}
+
+output "s3_replica_bucket" {
+  value = module.s3_replica.bucket_id
+}
+
+output "grafana_dashboard_url" {
+  value = module.grafana.dashboard_url
+}

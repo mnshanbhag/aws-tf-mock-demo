@@ -6,7 +6,7 @@ services:
       - "4566:4566"       # Edge port — every AWS API goes through here
       - "4510-4559:4510-4559" # Used internally for some emulated services (e.g. RDS)
     environment:
-      - SERVICES=ec2,iam,rds,s3,sts
+      - SERVICES=cloudwatch,ec2,iam,lambda,logs,rds,s3,sts
       - DEBUG=0
       # MSSQL_ACCEPT_EULA is required before LocalStack will let you create
       # a sqlserver-ex RDS instance — it's accepting Microsoft's EULA on
@@ -22,3 +22,25 @@ services:
       timeout: 5s
       retries: 5
       start_period: 15s
+
+  grafana:
+    container_name: grafana-demo
+    image: grafana/grafana:11.0.0
+    ports:
+      - "3000:3000"
+    environment:
+      # Datasource + dashboard are provisioned by Terraform — Grafana itself
+      # needs no pre-built config files here.
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+      # Allow unsigned plugins if needed for CloudWatch in some Grafana builds
+      - GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS=grafana-cloudwatch-datasource
+    depends_on:
+      localstack:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
